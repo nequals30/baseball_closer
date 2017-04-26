@@ -3,3 +3,6 @@
 
 # Yahoo Private Key #
 myPrivateKey.txt
+
+# Other
+.httr-oauth
