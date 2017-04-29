@@ -1,5 +1,6 @@
 # RData Files #
 *.Rdata
+.Rhistory
 
 # Yahoo Private Key #
 myPrivateKey.txt

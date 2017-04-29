@@ -7,8 +7,8 @@ yahoo_get_league_standing <- function(){
   load("Fantasy.Rdata");
   
 # Construct proper URL for player ownership -------------------------------------------
-  game_ID <- 370; # MLB 2017. You can get this by querying http://fantasysports.yahooapis.com/fantasy/v2/game/mlb
-  league_ID <- 30362; # League ID. See your league settings.
+  game_ID <-370; # MLB 2017. You can get this by querying http://fantasysports.yahooapis.com/fantasy/v2/game/mlb
+  league_ID <-30362; # League ID. See your league settings.
   leagueKey  <- paste(game_ID,'.l.',league_ID,sep='');
   
   baseURL <- "http://fantasysports.yahooapis.com/fantasy/v2/league/";
@@ -16,8 +16,8 @@ yahoo_get_league_standing <- function(){
   fullURL <- paste(baseURL,leagueKey,specURL,sep='');
   
 # Fetch data --------------------------------------------------------------------------
-  page <-GET(fullURL,sig);
+  page <-GET(fullURL,config(token=yahoo_token));
   retrievedXml <- content(page, as="text", encoding="utf-8");
   standingsInfo <- xmlTreeParse(retrievedXml, useInternal=TRUE);
-  
+
 }
