@@ -26,11 +26,8 @@ closer_analysis <- function(){
 ## Figure out the correct Game_ID ----------------------------------------------------
   
   game_ID <- yahooFantasy_get_gameID(league_sport,league_year,yahoo_token);
-  
   leagueKey <- paste0(game_ID,'.l.',league_ID);
   
-  standings <- yahooFantasy_get_leagueStandings(leagueKey,yahoo_token);
-  
-  paste("yo dawg");
+  allPlayers <- yahooFantasy_get_allPlayers(leagueKey,yahoo_token);
   
 }
