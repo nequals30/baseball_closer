@@ -1,6 +1,6 @@
 library(httr)
 library(httpuv)
-library(XML)
+library(jsonlite)
 
 yahooFantasy_get_oauth_token <- function(cKey,cSecret) {
   # Creates Oauth Token for connecting to Yahoo API and saves it.
@@ -11,7 +11,7 @@ yahooFantasy_get_oauth_token <- function(cKey,cSecret) {
   #
   # Outputs:
   #   yahoo_token
-  
+
     yahoo <- oauth_endpoints("yahoo");
     
     myapp <- oauth_app("yahoo", key=cKey, secret=cSecret);
@@ -25,10 +25,17 @@ yahooFantasy_get_oauth_token <- function(cKey,cSecret) {
 yahooFantasy_query <- function(inUrl,yahoo_token){
   # Internal helper function to 
   page <-GET(inUrl,config(token=yahoo_token));
-  retrievedXml <- content(page, as="text", encoding="utf-8");
-  outXml <- xmlRoot(xmlTreeParse(retrievedXml,useInternal=TRUE));
-  return(outXml)
+  retrievedJSON <- content(page, as="text", encoding="utf-8");
+  if (substr(retrievedJSON,1,9)=="<!doctype"){
+    stop('Yahoo sent back an error.')
+  }
+  if (substr(retrievedJSON,1,5)!="{\"fan"){
+    stop("What Yahoo sent back is not a JSON.");
+  }
+  outList <- fromJSON(retrievedJSON);
+  return(outList)
 }
+
 
 yahooFantasy_get_gameID <- function(sport,year,yahoo_token){
   # Ask Yahoo for the 3-digit game_ID based on the sport and season
@@ -36,15 +43,14 @@ yahooFantasy_get_gameID <- function(sport,year,yahoo_token){
   if (year!=2017){
     stop("Not implemented. Dont know how to query Yahoo API for season except for current season");
   }
-  thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/game/",sport);
-  thisXml <- yahooFantasy_query(thisUrl,yahoo_token);
-  thisTbl <- xmlToDataFrame(thisXml)
-  game_ID <- thisTbl$game_id
+  thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/game/",sport,'?format=json');
+  gameInfoList <- yahooFantasy_query(thisUrl,yahoo_token);
+  game_ID <- gameInfoList$fantasy_content$game$game_key
   return(game_ID)
 }
 
+
 yahooFantasy_get_allPlayers <- function(leagueKey,yahoo_token){
-  thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/league/",leagueKey,'/players');
-  thisXml <- yahooFantasy_query(thisUrl,yahoo_token);
-  thisTbl <- xmlToDataFrame(thisXml[["league"]][["players"]]);
+  thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/league/",leagueKey,'/players?format=json');
+  playerList <- yahooFantasy_query(thisUrl,yahoo_token);
 }
