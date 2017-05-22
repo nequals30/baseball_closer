@@ -28,6 +28,6 @@ closer_analysis <- function(){
   game_ID <- yahooFantasy_get_gameID(league_sport,league_year,yahoo_token);
   leagueKey <- paste0(game_ID,'.l.',league_ID);
   
-  allPlayers <- yahooFantasy_get_allPlayers(leagueKey,yahoo_token);
+  allPlayers <- yahooFantasy_get_allRelievers(leagueKey,yahoo_token);
   
 }
