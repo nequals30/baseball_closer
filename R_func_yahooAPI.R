@@ -30,12 +30,12 @@ yahooFantasy_query <- function(inUrl,yahoo_token){
   out <- content(page, as="text", encoding="utf-8");
   
   outXml<-xmlTreeParse(out,useInternal=TRUE);
-  outList<-xmlToList(outXml);
+  outNode <- xmlRoot(outXml);
   
   # if (substr(out,1,9)=="<!doctype"){
   #   stop('Yahoo sent back an error.')
   # }
-  return(outList)
+  return(outNode)
 }
 
 
@@ -52,8 +52,8 @@ yahooFantasy_get_gameID <- function(sport,year,yahoo_token){
   #   game_ID: A string with a 3 digit number
   
   thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/game/",sport,'?season=',year);
-  gameInfoList <- yahooFantasy_query(thisUrl,yahoo_token);
-  game_ID <- gameInfoList$game$game_key;
+  thisXml <- yahooFantasy_query(thisUrl,yahoo_token);
+  game_ID <- xmlValue(thisXml[["game"]][["game_key"]]);
   return(game_ID)
 }
 
@@ -62,7 +62,7 @@ yahooFantasy_get_gameID <- function(sport,year,yahoo_token){
 yahooFantasy_get_allRelievers <- function(leagueKey,yahoo_token){
   # Ask yahoo for the list of all relief pitchers in your baseball lauge.
   
-  thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/league/",leagueKey,'/players?position=RP');
-  playerList <- yahooFantasy_query(thisUrl,yahoo_token);
-  temp <- playerList$league;
+  thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/league/",leagueKey,'/players?&position=RP&count=5');
+  thisXml <- yahooFantasy_query(thisUrl,yahoo_token);
+  playerTbl <- xmlToDataFrame(thisXml[["league"]][["players"]]);
 }
