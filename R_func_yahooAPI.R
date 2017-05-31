@@ -62,7 +62,20 @@ yahooFantasy_get_gameID <- function(sport,year,yahoo_token){
 yahooFantasy_get_allRelievers <- function(leagueKey,yahoo_token){
   # Ask yahoo for the list of all relief pitchers in your baseball lauge.
   
-  thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/league/",leagueKey,'/players?&position=RP&count=5');
-  thisXml <- yahooFantasy_query(thisUrl,yahoo_token);
-  playerTbl <- xmlToDataFrame(thisXml[["league"]][["players"]]);
+  i <- 0;
+  tempTbl <- data.frame(0);
+  while (nrow(tempTbl)!=0){
+    thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/league/",leagueKey,'/players?&position=RP&start=',i);
+    thisXml <- yahooFantasy_query(thisUrl,yahoo_token);
+    tempTbl <- xmlToDataFrame(thisXml[["league"]][["players"]]);
+    tempTbl <- tempTbl[,!names(tempTbl)=='has_recent_player_notes'];
+    if (i==0) {
+      playerTbl <- tempTbl;
+    } else {
+      playerTbl <- rbind(playerTbl,tempTbl)
+    }
+    i <- i+25;
+    cat(paste0('count=',i));
+  }
+
 }
