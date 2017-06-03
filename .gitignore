@@ -5,5 +5,8 @@
 # Yahoo Private Key #
 myPrivateKey.txt
 
-# Other
+# Other #
 .httr-oauth
+
+# Directories #
+images/

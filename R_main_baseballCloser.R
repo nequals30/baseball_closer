@@ -23,11 +23,11 @@ closer_analysis <- function(){
     return(yahoo_token);
   })
   
-## Figure out the correct Game_ID ----------------------------------------------------
+## Figure out the correct Game_ID and league Key ---------------------------------------
   
   game_ID <- yahooFantasy_get_gameID(league_sport,league_year,yahoo_token);
   leagueKey <- paste0(game_ID,'.l.',league_ID);
   
-  allPlayers <- yahooFantasy_get_allRelievers(leagueKey,yahoo_token);
+  allRelievers <- yahooFantasy_get_allRelievers(leagueKey,yahoo_token);
   
 }

@@ -24,7 +24,14 @@ yahooFantasy_get_oauth_token <- function(cKey,cSecret) {
 
 
 yahooFantasy_query <- function(inUrl,yahoo_token){
-  # Internal helper function to query Yahoo for the data. 
+  # Internal helper function to query Yahoo for the data.
+  #
+  # Inputs:
+  #   inUrl         String URL
+  #   yahoo_token   yahoo_token produced by yahooFantasy_get_oauth_token
+  #
+  # Outputs: 
+  #   outNode       xml node object which contains query results
   
   page <-GET(inUrl,config(token=yahoo_token));
   out <- content(page, as="text", encoding="utf-8");
@@ -32,9 +39,6 @@ yahooFantasy_query <- function(inUrl,yahoo_token){
   outXml<-xmlTreeParse(out,useInternal=TRUE);
   outNode <- xmlRoot(outXml);
   
-  # if (substr(out,1,9)=="<!doctype"){
-  #   stop('Yahoo sent back an error.')
-  # }
   return(outNode)
 }
 
@@ -43,12 +47,12 @@ yahooFantasy_query <- function(inUrl,yahoo_token){
 yahooFantasy_get_gameID <- function(sport,year,yahoo_token){
   # Ask Yahoo for the 3-digit game_ID based on the sport and season.
   #
-  # Args:
+  # Inputs:
   #   sport: For example, 'mlb' or 'nfl'
   #   year:  For example, 2017
   #   yahoo_token:  yahoo token obtained from yahooFantasy_get_oauth_token
   #
-  # Returns:
+  # Outputs:
   #   game_ID: A string with a 3 digit number
   
   thisUrl <- paste0("http://fantasysports.yahooapis.com/fantasy/v2/game/",sport,'?season=',year);
